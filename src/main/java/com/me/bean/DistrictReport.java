@@ -5,6 +5,7 @@ public class DistrictReport {
 	public String year;
 	public String districtId;
 	public String stateId;
+	public String reportType;
 	
 	public String getYear() {
 		return year;
@@ -23,6 +24,12 @@ public class DistrictReport {
 	}
 	public void setStateId(String stateId) {
 		this.stateId = stateId;
+	}
+	public String getReportType() {
+		return reportType;
+	}
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
 	}
 	
 	

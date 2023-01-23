@@ -14,5 +14,6 @@ public interface PgiApproverRepository extends JpaRepository<PgiPerformanceAppro
 	List<PgiPerformanceApprover> findByStateCodeAndApproverTypeAndInityear(Integer stateId, String approvetype,String inityear);
 	List<PgiPerformanceApprover> findByApproverType(String approverType);
 	List<PgiPerformanceApprover> findByApproverTypeAndInityear(String approverType, String initYear);
+	List<PgiPerformanceApprover> findByDistrictCodeAndApproverTypeAndInityear(Integer districtId, String approvetype,String inityear);
 	
 }

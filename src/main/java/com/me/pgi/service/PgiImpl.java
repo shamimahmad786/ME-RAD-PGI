@@ -178,8 +178,21 @@ public class PgiImpl {
 	
 	
 	public PgiPerformanceApprover saveApprover(PgiPerformanceApprover data) {
+		if(data.getId() ==null && data.getApproverType() !=null && data.getApproverType().equalsIgnoreCase("S")) {
+			List<PgiPerformanceApprover> sObj=	pgiApproverRepository.findByStateCodeAndApproverTypeAndInityear(data.getStateCode(),data.getApproverType(),data.getInityear());
+			if(sObj.size()>0) {
+			data.setId(sObj.get(0).getId());
+			}
+		}else if(data.getId() ==null && data.getApproverType() !=null && data.getApproverType().equalsIgnoreCase("D")) {
+			List<PgiPerformanceApprover> sObj=	pgiApproverRepository.findByDistrictCodeAndApproverTypeAndInityear(data.getDistrictCode(),data.getApproverType(),data.getInityear());
+			if(sObj.size()>0) {
+			data.setId(sObj.get(0).getId());
+			}
+		}
 		return pgiApproverRepository.save(data);
 	}
+	
+	
 	public List<PgiPerformanceApprover> getApproveData(Integer data,String type,String inityear) {
 //		return null;
 		// System.out.println("get approve data--->"+data);

@@ -275,6 +275,8 @@ public class PgiController {
 	@RequestMapping(value = "/saveApprover", method = RequestMethod.POST)
 	public PgiPerformanceApprover saveApprover(@RequestBody PgiPerformanceApprover data) throws JsonProcessingException {	
 		// System.out.println("In save approver--->"+data.getState_name());
+		
+		System.out.println(data.getInityear());
 		return pgiImpl.saveApprover(data);
 	}
 	
@@ -458,7 +460,9 @@ public class PgiController {
 		}else if(data.getYear().equalsIgnoreCase("2019")) {
 			year="2019-20";
 		}else if(data.getYear().equalsIgnoreCase("2020")) {
-			year="2019-20";
+			year="2020-21";
+		}else if(data.getYear().equalsIgnoreCase("2021")) {
+			year="2021-22";
 		}
 		
 		StaticReportBean sObj=new StaticReportBean();
@@ -466,7 +470,65 @@ public class PgiController {
 		String sql;
 		QueryResult qrObj=null;
 		
-		if(data.getDistrictId().equalsIgnoreCase("99")) {
+		System.out.println(data.getDistrictId());
+		System.out.println(data.getReportType());
+		
+		if(data.getStateId().equalsIgnoreCase("all")) {
+			 sql="select md.udise_district_code , md.district_name ,pdq.questionid , pdq.quesseries , pdq.questiondesc ,pdq.weight , ms.state_name , \r\n"
+						+ "pdq.subquestiondesc1 ,prdp.r1 ,\r\n"
+						+ "pdq.subquestiondesc2 ,prdp.r2 ,\r\n"
+						+ "pdq.data_source ,\r\n"
+						+ "prdp.cal_vlaue ,\r\n"
+						+ "prdp.cal_point \r\n"
+						+ "from public.pgi_re_dist_performance prdp , public.pgi_district_question pdq , public.mst_district md  , public.mst_state ms \r\n"
+						+ "where refrence_year = '"+data.getYear()+"'\r\n"
+						+ "and prdp.question_id = pdq.questionid \r\n"
+						+ "and prdp.udise_district_code = md.udise_district_code \r\n"
+						+" and ms.udise_state_code = md.udise_state_code  "
+						+ "and md.inityear = '"+year+"'\r\n"
+						+ " and ms.inityear='"+year.split("-")[0]+"' "
+					//	+ "and prdp.state_id ='"+data.getStateId()+"'\r\n"
+//						+ "order by  md.udise_district_code ,md.district_name, pdq.sortid";
+				  + "order by  md.district_name, pdq.sortid";
+				qrObj = nativeRepository.executeQueries(sql);
+		}else if(data.getStateId() !=null && !data.getStateId().equalsIgnoreCase("all") && data.getStateId() !=null && data.getDistrictId().equalsIgnoreCase("99")) {
+			 sql="select md.udise_district_code , md.district_name ,pdq.questionid , pdq.quesseries , pdq.questiondesc ,pdq.weight , ms.state_name , \r\n"
+						+ "pdq.subquestiondesc1 ,prdp.r1 ,\r\n"
+						+ "pdq.subquestiondesc2 ,prdp.r2 ,\r\n"
+						+ "pdq.data_source ,\r\n"
+						+ "prdp.cal_vlaue ,\r\n"
+						+ "prdp.cal_point \r\n"
+						+ "from public.pgi_re_dist_performance prdp , public.pgi_district_question pdq , public.mst_district md  , public.mst_state ms \r\n"
+						+ "where refrence_year = '"+data.getYear()+"'\r\n"
+						+ "and prdp.question_id = pdq.questionid \r\n"
+						+ "and prdp.udise_district_code = md.udise_district_code \r\n"
+						+" and ms.udise_state_code = md.udise_state_code  "
+						+ "and md.inityear = '"+year+"'\r\n"
+						+ " and ms.inityear='"+year.split("-")[0]+"' "
+						+ "and prdp.state_id ='"+data.getStateId()+"'\r\n"
+//						+ "order by  md.udise_district_code ,md.district_name, pdq.sortid";
+				  + "order by  md.district_name, pdq.sortid";
+				qrObj = nativeRepository.executeQueries(sql);
+		}else if(data.getStateId() !=null && !data.getStateId().equalsIgnoreCase("all") && data.getDistrictId() !=null && !data.getDistrictId().equalsIgnoreCase("99")) {
+			sql="select md.udise_district_code , md.district_name ,pdq.questionid , pdq.quesseries , pdq.questiondesc ,pdq.weight , ms.state_name , \r\n"
+					+ "pdq.subquestiondesc1 ,prdp.r1 ,\r\n"
+					+ "pdq.subquestiondesc2 ,prdp.r2 ,\r\n"
+					+ "pdq.data_source ,\r\n"
+					+ "prdp.cal_vlaue ,\r\n"
+					+ "prdp.cal_point \r\n"
+					+ "from public.pgi_re_dist_performance prdp , public.pgi_district_question pdq , public.mst_district md  , public.mst_state ms \r\n"
+					+ "where refrence_year = '"+data.getYear()+"'\r\n"
+					+ "and prdp.question_id = pdq.questionid \r\n"
+					+ "and prdp.udise_district_code = md.udise_district_code \r\n"
+					+" and ms.udise_state_code = md.udise_state_code  "
+					+ "and md.inityear = '"+year+"'\r\n"
+					+ " and ms.inityear='"+year.split("-")[0]+"' "
+					+ "and md.district_id ='"+data.getDistrictId()+"'";
+//					+ "order by  md.udise_district_code ,md.district_name, pdq.sortid";
+//			  + "order by  md.district_name, pdq.sortid";
+			qrObj = nativeRepository.executeQueries(sql);
+		}
+		else if(data.getDistrictId().equalsIgnoreCase("99")) {
 			
 //			// System.out.println(":::::::::::::::1::::::::::::::::::::::");
 			
@@ -513,6 +575,7 @@ public class PgiController {
 		}
 		else {
 			
+			System.out.println("in else---");
 //			// System.out.println(":::::::::::::::sigle state single district::::::::::::::::::::::");
 			
 			String sql1="select md.udise_district_code , md.district_name ,pdq.questionid , pdq.quesseries , pdq.questiondesc ,pdq.weight ,  ms.state_name ,  \r\n"
